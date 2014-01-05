@@ -9,7 +9,8 @@ module Fluent
     config_param :username, :string
     config_param :password, :string, :default => ''
 
-    config_param :key_names, :string
+    config_param :column_names, :string
+    config_param :key_names, :string, :default => nil
     config_param :table, :string
 
     config_param :on_duplicate_key_update, :bool, :default => false
@@ -25,8 +26,8 @@ module Fluent
     def configure(conf)
       super
 
-      if @key_names.nil?
-        raise Fluent::ConfigError, "key_names MUST be specified, but missing"
+      if @column_names.nil?
+        raise Fluent::ConfigError, "column_names MUST be specified, but missing"
       end
 
       if @on_duplicate_key_update
@@ -43,7 +44,8 @@ module Fluent
         @on_duplicate_key_update_sql += updates.join(',')
       end
 
-      @key_names = @key_names.split(',')
+      @column_names = @column_names.split(',')
+      @key_names = @key_names.nil? ? @column_names : @key_names.split(',')
       @format_proc = Proc.new{|tag, time, record| @key_names.map{|k| record[k]}}
 
     end
@@ -76,10 +78,10 @@ module Fluent
       values_templates = []
       values = Array.new
       chunk.msgpack_each { |tag, time, data|
-        values_templates.push "(#{@key_names.map{|key| '?'}.join(',')})"
+        values_templates.push "(#{@column_names.map{|key| '?'}.join(',')})"
         values.concat(data)
       }
-      sql = "INSERT INTO #{@table} (#{@key_names.join(',')}) VALUES #{values_templates.join(',')}"
+      sql = "INSERT INTO #{@table} (#{@column_names.join(',')}) VALUES #{values_templates.join(',')}"
       if @on_duplicate_key_update
         sql += @on_duplicate_key_update_sql
       end

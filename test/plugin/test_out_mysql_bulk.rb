@@ -31,7 +31,7 @@ class MysqlBulkOutputTest < Test::Unit::TestCase
         database test_app_development
         username root
         password hogehoge
-        key_names id,user_name,created_at,updated_at
+        column_names id,user_name,created_at,updated_at
         table users
         on_duplicate_key_update true
         flush_interval 10s
@@ -43,7 +43,7 @@ class MysqlBulkOutputTest < Test::Unit::TestCase
         host localhost
         username root
         password hogehoge
-        key_names id,user_name,created_at,updated_at
+        column_names id,user_name,created_at,updated_at
         table users
         on_duplicate_key_update true
         on_duplicate_update_keys user_name,updated_at
@@ -60,7 +60,7 @@ class MysqlBulkOutputTest < Test::Unit::TestCase
         database test_app_development
         username root
         password hogehoge
-        key_names id,user_name,created_at,updated_at
+        column_names id,user_name,created_at,updated_at
         table users
         on_duplicate_key_update true
         on_duplicate_update_keys user_name,updated_at
@@ -73,7 +73,7 @@ class MysqlBulkOutputTest < Test::Unit::TestCase
         database test_app_development
         username root
         password hogehoge
-        key_names id,user_name,created_at,updated_at
+        column_names id,user_name,created_at,updated_at
         table users
       ]
     }
@@ -83,7 +83,20 @@ class MysqlBulkOutputTest < Test::Unit::TestCase
         database test_app_development
         username root
         password hogehoge
-        key_names id,user_name,created_at,updated_at
+        column_names id,user_name,created_at,updated_at
+        table users
+        on_duplicate_key_update true
+        on_duplicate_update_keys user_name,updated_at
+      ]
+    }
+
+    assert_nothing_raised(Fluent::ConfigError) {
+      d = create_driver %[
+        database test_app_development
+        username root
+        password hogehoge
+        column_names id,user_name,created_at,updated_at
+        key_names id,user,created_date,updated_date
         table users
         on_duplicate_key_update true
         on_duplicate_update_keys user_name,updated_at

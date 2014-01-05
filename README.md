@@ -26,7 +26,8 @@ host|database host(default: 127.0.0.1)
 database|database name(require)
 username|user(require)
 password|password(default: blank)
-key_names|bulk insert column (require)
+column_names|bulk insert column (require)
+key_names|value key names (default : column_names)
 table|bulk insert table (require)
 on_duplicate_key_update|on duplicate key update enable (true:false)
 on_duplicate_update_keys|on duplicate key update column, comma separator
@@ -40,7 +41,7 @@ on_duplicate_update_keys|on duplicate key update column, comma separator
   database test_app_development
   username root
   password hogehoge
-  key_names id,user_name,created_at,updated_at
+  column_names id,user_name,created_at,updated_at
   table users
   flush_interval 10s
 </match>
@@ -81,7 +82,7 @@ INSERT INTO users (id,user_name,created_at,updated_at) VALUES (NULL,'toyama','20
   database test_app_development
   username root
   password hogehoge
-  key_names id,user_name,created_at,updated_at
+  column_names id,user_name,created_at,updated_at
   table users
   on_duplicate_key_update true
   on_duplicate_update_keys user_name,updated_at
@@ -112,6 +113,44 @@ then result becomes as below (indented):
 ```
 
 if duplicate id , update username and updated_at
+
+
+## Configuration Example(bulk insert,fluentd key different column name)
+
+```
+<match mysql.input>
+  type mysql_bulk
+  host localhost
+  database test_app_development
+  username root
+  password hogehoge
+  column_names id,user_name,created_at,updated_at
+  key_names id,user,created_date,updated_date
+  table users
+  flush_interval 10s
+</match>
+```
+
+Assume following input is coming:
+
+```js
+mysql.input: {"user":"toyama","created_date":"2014/01/03 21:35:15","updated_date":"2014/01/03 21:35:15","dummy":"hogehoge"}
+mysql.input: {"user":"toyama2","created_date":"2014/01/03 21:35:21","updated_date":"2014/01/03 21:35:21","dummy":"hogehoge"}
+mysql.input: {"user":"toyama3","created_date":"2014/01/03 21:35:27","updated_date":"2014/01/03 21:35:27","dummy":"hogehoge"}
+```
+
+then result becomes as below (indented):
+
+```sql
++-----+-----------+---------------------+---------------------+
+| id  | user_name | created_at          | updated_at          |
++-----+-----------+---------------------+---------------------+
+| 1   | toyama    | 2014-01-03 21:35:15 | 2014-01-03 21:35:15 |
+| 2   | toyama2   | 2014-01-03 21:35:21 | 2014-01-03 21:35:21 |
+| 3   | toyama3   | 2014-01-03 21:35:27 | 2014-01-03 21:35:27 |
++-----+-----------+---------------------+---------------------+
+```
+
 
 
 
