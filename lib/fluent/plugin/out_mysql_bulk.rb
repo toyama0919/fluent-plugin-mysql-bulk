@@ -51,7 +51,6 @@ module Fluent
     end
 
     def start
-      @handler = client
       super
     end
 
@@ -75,6 +74,7 @@ module Fluent
     end
 
     def write(chunk)
+      @handler = client
       values_templates = []
       values = Array.new
       chunk.msgpack_each { |tag, time, data|
