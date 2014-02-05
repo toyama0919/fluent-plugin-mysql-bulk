@@ -46,7 +46,7 @@ module Fluent
 
       @column_names = @column_names.split(',')
       @key_names = @key_names.nil? ? @column_names : @key_names.split(',')
-      @format_proc = Proc.new{|tag, time, record| @key_names.map{|k| record[k]}}
+      @format_proc = Proc.new{|tag, time, record| @key_names.map{|k| k == '${time}' ? Time.at(time).strftime("%Y-%m-%d %H:%M:%S") : record[k]}}
 
     end
 
