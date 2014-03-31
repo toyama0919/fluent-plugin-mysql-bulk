@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 Gem::Specification.new do |gem|
   gem.name          = "fluent-plugin-mysql-bulk"
-  gem.version       = "0.0.5"
+  gem.version       = "0.0.6"
   gem.authors       = ["Hiroshi Toyama"]
   gem.email         = ["toyama0919@gmail.com"]
   gem.description   = %q{fluent plugin mysql bulk insert is high performance and on duplicate key update respond.}

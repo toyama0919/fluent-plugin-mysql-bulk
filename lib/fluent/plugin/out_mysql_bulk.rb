@@ -96,6 +96,7 @@ module Fluent
 
       $log.info "bulk insert values size => #{values_templates.size}"
       @handler.xquery(sql, values)
+      @handler.close
     end
 
     private
