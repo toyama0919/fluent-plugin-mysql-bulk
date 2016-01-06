@@ -39,7 +39,7 @@ module Fluent
         @on_duplicate_key_update_sql = ' ON DUPLICATE KEY UPDATE '
         updates = []
         @on_duplicate_update_keys.each do |update_column|
-          updates.push(" #{update_column} = VALUES(#{update_column})")
+          updates.push("#{update_column} = VALUES(#{update_column})")
         end
         @on_duplicate_key_update_sql += updates.join(',')
       end
