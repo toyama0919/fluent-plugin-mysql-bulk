@@ -85,17 +85,16 @@ module Fluent
 
     def write(chunk)
       @handler = client
-      values_templates = []
       values = []
+      values_template = "(#{ @column_names.map { |key| '?' }.join(',') })"
       chunk.msgpack_each do |tag, time, data|
-        values_templates << "(#{ @column_names.map { |key| '?' }.join(',') })"
-        values.concat(data)
+        values << Mysql2::Client.pseudo_bind(values_template, data)
       end
-      sql = "INSERT INTO #{@table} (#{@column_names.join(',')}) VALUES #{values_templates.join(',')}"
+      sql = "INSERT INTO #{@table} (#{@column_names.join(',')}) VALUES #{values.join(',')}"
       sql += @on_duplicate_key_update_sql if @on_duplicate_key_update
 
-      $log.info "bulk insert values size => #{values_templates.size}"
-      @handler.xquery(sql, values)
+      $log.info "bulk insert values size => #{values.size}"
+      @handler.xquery(sql)
       @handler.close
     end
 
