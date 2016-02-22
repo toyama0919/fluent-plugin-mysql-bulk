@@ -1,3 +1,5 @@
+**Deprecated : This plugin had been merged to [fluent-plugin-mysql](https://github.com/tagomoris/fluent-plugin-mysql). This plugin is not maintained anymore!!!!!**
+---
 
 # fluent-plugin-mysql-bulk, a plugin for [Fluentd](http://fluentd.org) [![Build Status](https://secure.travis-ci.org/toyama0919/fluent-plugin-mysql-bulk.png?branch=master)](http://travis-ci.org/toyama0919/fluent-plugin-mysql-bulk)
 
